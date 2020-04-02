@@ -3,3 +3,4 @@ venv
 env
 .pytest_cache
 .coverage
+images_to_process
