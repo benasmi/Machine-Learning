@@ -4,3 +4,6 @@ env
 .pytest_cache
 .coverage
 images_to_process
+cropped_images
+normalized_data
+dataset.txt
