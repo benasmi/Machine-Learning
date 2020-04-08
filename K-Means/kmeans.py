@@ -18,7 +18,7 @@ df = pd.read_csv('normalized_data')
 usecols = ["fft", "blobs", "corners", "b", "g", "r"]
 
 #Cluster
-classifier = KMeansClassifier(clusters_count=2,
+classifier = KMeansClassifier(clusters_count=5,
                               dimensions_count=5,
                               data=df,
                               columns=usecols,
