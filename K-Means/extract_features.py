@@ -17,6 +17,15 @@ class ExtractFeatures():
         f = np.fft.fft2(img)
         fshift = np.fft.fftshift(f)
         magnitude_spectrum = 20 * np.log(np.abs(fshift))
+
+        '''
+        plt.subplot(121), plt.imshow(img, cmap='gray')
+        plt.title('Input Image'), plt.xticks([]), plt.yticks([])
+        plt.subplot(122), plt.imshow(magnitude_spectrum, cmap='gray')
+        plt.title('Magnitude Spectrum'), plt.xticks([]), plt.yticks([])
+        plt.show()
+        '''
+
         return np.average(magnitude_spectrum)
 
     def cornerness(self,img):
@@ -31,7 +40,19 @@ class ExtractFeatures():
 
         # find centroids
         ret, labels, stats, centroids = cv2.connectedComponentsWithStats(dst)
+
+        '''
         # define the criteria to stop and refine the corners
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.001)
+        corners = cv2.cornerSubPix(gray, np.float32(centroids), (5, 5), (-1, -1), criteria)
+
+        # Now draw them
+        res = np.hstack((centroids, corners))
+        res = np.int0(res)
+        img[res[:, 1], res[:, 0]] = [0, 0, 255]
+        img[res[:, 3], res[:, 2]] = [0, 255, 0]
+        cv2.imshow("s",img)
+        '''
         return len(centroids)
 
     def extract_features(self):
@@ -126,9 +147,26 @@ class ExtractFeatures():
         cv2.waitKey(0)
 
     def extract(self):
+        im1 = cv2.imread("cropped_images/cropped_1.jpg") #Laukai
+        im2 = cv2.imread("cropped_images/cropped_71.jpg") #Miestas
+
+        self.plot_hist(im1)
+        self.plot_hist(im2)
+
+
+        return
         print("Extracting features...")
         self.extract_features()
         if self.normalize:
             print("Normalizing features...")
             self.normalize_data()
         print("--Finished--")
+
+    def plot_hist(self,im):
+        color = ('b', 'g', 'r')
+        for i, col in enumerate(color):
+            histr = cv2.calcHist([im], [i], None, [256], [0, 256])
+            print(str(histr.max()))
+            plt.plot(histr, color=col)
+            plt.xlim([0, 256])
+        plt.show()
